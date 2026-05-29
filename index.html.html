@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="theme-color" content="#0A0812">
+<title>تربية أونلاين — AsrarSwift</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0A0812; --bg2:#110F1C; --bg3:#1A1628;
+  --gold:#D4A843; --gold-l:#FDF3DC; --gold-d:#8B6A1A;
+  --purple:#7B3FE4; --purple-l:#EDE0FF;
+  --teal:#1AAA8B; --teal-l:#E0FBF4;
+  --rose:#E44B6B; --rose-l:#FFE0E8;
+  --cream:#F2EBF8; --muted:#8A7A9A;
+  --border:rgba(212,168,67,0.12);
+  --card:rgba(17,15,28,0.95);
+  --r:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--cream);direction:rtl;min-height:100vh;overflow-x:hidden;}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s;gap:16px;}
+.splash-logo{font-size:56px;animation:pulse-logo 2s ease-in-out infinite;}
+.splash-name{font-size:28px;font-weight:900;color:var(--gold);letter-spacing:2px;}
+.splash-sub{font-size:13px;color:var(--muted);}
+.splash-bar{width:160px;height:3px;background:rgba(212,168,67,0.15);border-radius:2px;overflow:hidden;margin-top:8px;}
+.splash-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:2px;animation:fill-bar 2s ease forwards;}
+@keyframes pulse-logo{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+@keyframes fill-bar{0%{width:0%;}100%{width:100%;}}
+
+/* ── NAV BAR ── */
+.navbar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(10,8,18,0.97);border-top:1px solid var(--border);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));backdrop-filter:blur(20px);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;transition:all 0.2s;border:none;background:none;font-family:'Cairo',sans-serif;}
+.nav-icon{font-size:22px;transition:transform 0.2s;}
+.nav-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.5px;transition:color 0.2s;}
+.nav-item.active .nav-icon{transform:scale(1.15);}
+.nav-item.active .nav-label{color:var(--gold);}
+
+/* ── PAGES ── */
+.page{display:none;padding:0 0 90px;min-height:100vh;}
+.page.active{display:block;}
+
+/* ── HEADER ── */
+.page-header{padding:52px 20px 24px;background:linear-gradient(180deg,var(--bg2) 0%,transparent 100%);}
+.page-header h1{font-size:clamp(22px,5vw,32px);font-weight:900;line-height:1.2;}
+.page-header h1 em{color:var(--gold);font-style:normal;}
+.page-header p{font-size:13px;color:var(--muted);margin-top:6px;}
+
+/* ── HOME ── */
+.hero-banner{margin:0;padding:60px 20px 40px;background:linear-gradient(160deg,#0A0812 0%,#160A28 50%,#0A1218 100%);position:relative;overflow:hidden;text-align:center;}
+.hero-banner::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(212,168,67,0.08) 0%,transparent 65%);}
+.hero-logo{font-size:52px;margin-bottom:12px;position:relative;z-index:1;}
+.hero-title{font-size:clamp(24px,6vw,36px);font-weight:900;line-height:1.15;position:relative;z-index:1;margin-bottom:8px;}
+.hero-title em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:13px;color:rgba(242,235,248,0.55);max-width:320px;margin:0 auto 24px;position:relative;z-index:1;}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#0A0812;font-weight:700;font-size:14px;padding:12px 28px;border-radius:30px;cursor:pointer;border:none;font-family:'Cairo',sans-serif;position:relative;z-index:1;box-shadow:0 4px 20px rgba(212,168,67,0.3);transition:all 0.2s;}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(212,168,67,0.4);}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);}
+.stat-item{flex:1;padding:16px 8px;text-align:center;border-left:1px solid var(--border);}
+.stat-item:last-child{border-left:none;}
+.stat-num{font-size:20px;font-weight:900;color:var(--gold);}
+.stat-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;}
+
+/* SECTION */
+.section{padding:24px 16px 8px;}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:14px;font-weight:700;color:var(--cream);display:flex;align-items:center;gap:8px;}
+.section-more{font-size:11px;color:var(--gold);cursor:pointer;font-weight:600;}
+
+/* FEATURE CARDS */
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 14px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.2s;}
+.feat-card:hover::before,.feat-card:active::before{opacity:1;}
+.feat-card.gold::before{background:rgba(212,168,67,0.06);}
+.feat-card.purple::before{background:rgba(123,63,228,0.06);}
+.feat-card.teal::before{background:rgba(26,170,139,0.06);}
+.feat-card.rose::before{background:rgba(228,75,107,0.06);}
+.feat-icon{font-size:28px;margin-bottom:10px;}
+.feat-title{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:4px;}
+.feat-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.feat-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:8px;}
+.feat-badge.free{background:rgba(26,170,139,0.15);color:var(--teal);}
+.feat-badge.pro{background:rgba(212,168,67,0.15);color:var(--gold);}
+
+/* EPISODE CARDS */
+.ep-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:all 0.2s;}
+.ep-card:hover{border-color:rgba(212,168,67,0.3);}
+.ep-thumb{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--bg3),var(--bg2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--border);}
+.ep-info{flex:1;}
+.ep-num{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:3px;}
+.ep-title{font-size:13px;font-weight:700;color:var(--cream);line-height:1.4;margin-bottom:4px;}
+.ep-meta{font-size:11px;color:var(--muted);}
+.ep-play{width:36px;height:36px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+
+/* ── MUSIC PLAYER ── */
+.music-hero{padding:40px 20px 28px;text-align:center;background:linear-gradient(180deg,rgba(123,63,228,0.12) 0%,transparent 100%);}
+.music-hero h2{font-size:20px;font-weight:900;margin-bottom:6px;}
+.music-hero p{font-size:12px;color:var(--muted);}
+
+/* FREQ CARDS */
+.freq-grid{display:flex;flex-direction:column;gap:0;padding:0 16px;}
+.freq-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;transition:all 0.2s;}
+.freq-card.playing{border-color:var(--gold);box-shadow:0 0 20px rgba(212,168,67,0.15);}
+.freq-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;}
+.freq-hz{width:56px;height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.freq-hz.gold{background:linear-gradient(135deg,rgba(212,168,67,0.2),rgba(212,168,67,0.08));}
+.freq-hz.purple{background:linear-gradient(135deg,rgba(123,63,228,0.2),rgba(123,63,228,0.08));}
+.freq-hz.teal{background:linear-gradient(135deg,rgba(26,170,139,0.2),rgba(26,170,139,0.08));}
+.freq-hz.rose{background:linear-gradient(135deg,rgba(228,75,107,0.2),rgba(228,75,107,0.08));}
+.freq-hz.blue{background:linear-gradient(135deg,rgba(67,130,212,0.2),rgba(67,130,212,0.08));}
+.freq-hz-num{font-size:15px;font-weight:900;line-height:1;}
+.freq-hz-unit{font-size:9px;opacity:0.7;letter-spacing:1px;}
+.freq-info{flex:1;}
+.freq-name{font-size:14px;font-weight:700;color:var(--cream);margin-bottom:3px;}
+.freq-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.freq-btn{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.freq-btn.play-btn{background:rgba(212,168,67,0.12);color:var(--gold);}
+.freq-btn.playing-btn{background:var(--gold);color:#0A0812;}
+.freq-btn:hover{transform:scale(1.08);}
+
+/* PLAYER BAR */
+.player-bar{position:fixed;bottom:64px;left:0;right:0;z-index:400;background:rgba(17,15,28,0.98);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:12px 16px;display:none;backdrop-filter:blur(20px);}
+.player-bar.active{display:flex;align-items:center;gap:12px;}
+.pb-info{flex:1;}
+.pb-name{font-size:13px;font-weight:700;color:var(--cream);}
+.pb-freq{font-size:11px;color:var(--gold);}
+.pb-controls{display:flex;align-items:center;gap:10px;}
+.pb-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(212,168,67,0.1);color:var(--gold);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.pb-btn.main{background:var(--gold);color:#0A0812;width:42px;height:42px;font-size:16px;}
+.pb-btn:hover{transform:scale(1.08);}
+
+/* WAVE ANIM */
+.wave-anim{display:flex;align-items:center;gap:2px;height:20px;margin-top:6px;}
+.wave-bar-a{width:3px;border-radius:2px;background:var(--gold);animation:wave-a 1.2s ease-in-out infinite;}
+.wave-bar-a:nth-child(1){height:6px;animation-delay:0s;}
+.wave-bar-a:nth-child(2){height:14px;animation-delay:0.1s;}
+.wave-bar-a:nth-child(3){height:10px;animation-delay:0.2s;}
+.wave-bar-a:nth-child(4){height:18px;animation-delay:0.3s;}
+.wave-bar-a:nth-child(5){height:8px;animation-delay:0.4s;}
+.wave-bar-a:nth-child(6){height:16px;animation-delay:0.5s;}
+.wave-bar-a:nth-child(7){height:6px;animation-delay:0.6s;}
+@keyframes wave-a{0%,100%{transform:scaleY(0.4);opacity:0.5;}50%{transform:scaleY(1);opacity:1;}}
+
+/* PROGRESS BAR */
+.prog-track{height:3px;background:rgba(212,168,67,0.15);border-radius:2px;margin-top:8px;cursor:pointer;}
+.prog-fill{height:100%;background:var(--gold);border-radius:2px;width:0%;transition:width 0.3s;}
+
+/* ── SCALES ── */
+.scale-list{padding:0 16px;}
+.scale-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;display:flex;gap:12px;align-items:center;}
+.scale-item:hover{border-color:rgba(212,168,67,0.3);transform:translateY(-1px);}
+.si-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.si-icon.gold{background:rgba(212,168,67,0.12);}
+.si-icon.purple{background:rgba(123,63,228,0.12);}
+.si-icon.teal{background:rgba(26,170,139,0.12);}
+.si-icon.rose{background:rgba(228,75,107,0.12);}
+.si-body{flex:1;}
+.si-title{font-size:14px;font-weight:700;color:var(--cream);margin-bottom:3px;}
+.si-desc{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px;}
+.si-meta{display:flex;gap:6px;align-items:center;}
+.si-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.si-badge.free{background:rgba(26,170,139,0.15);color:var(--teal);}
+.si-badge.pro{background:rgba(212,168,67,0.15);color:var(--gold);}
+.si-qs{font-size:10px;color:var(--muted);}
+
+/* ── PROFILE ── */
+.profile-hero{padding:48px 20px 28px;text-align:center;}
+.avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 14px;border:3px solid rgba(212,168,67,0.3);}
+.profile-name{font-size:20px;font-weight:700;margin-bottom:4px;}
+.profile-plan{display:inline-flex;align-items:center;gap:6px;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.25);color:var(--gold);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:1px;}
+
+.menu-list{padding:0 16px;}
+.menu-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;}
+.menu-item:hover{border-color:rgba(212,168,67,0.2);}
+.mi-icon{font-size:20px;width:36px;text-align:center;}
+.mi-body{flex:1;}
+.mi-title{font-size:13px;font-weight:700;color:var(--cream);}
+.mi-desc{font-size:11px;color:var(--muted);}
+.mi-arrow{font-size:14px;color:var(--muted);}
+
+/* UPGRADE CARD */
+.upgrade-card{margin:0 16px 16px;background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(123,63,228,0.08));border:1px solid rgba(212,168,67,0.25);border-radius:var(--r);padding:20px;text-align:center;}
+.uc-icon{font-size:36px;margin-bottom:10px;}
+.uc-title{font-size:17px;font-weight:700;margin-bottom:6px;}
+.uc-desc{font-size:12px;color:rgba(242,235,248,0.65);margin-bottom:16px;line-height:1.6;}
+.uc-price{font-size:24px;font-weight:900;color:var(--gold);margin-bottom:4px;}
+.uc-period{font-size:11px;color:var(--muted);margin-bottom:16px;}
+.uc-btn{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#0A0812;border:none;border-radius:30px;padding:12px 36px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;transition:all 0.2s;width:100%;}
+.uc-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(212,168,67,0.3);}
+.uc-features{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;text-align:right;}
+.uc-feat{font-size:12px;color:rgba(242,235,248,0.75);display:flex;align-items:center;gap:8px;}
+.uc-feat::before{content:'✓';color:var(--teal);font-weight:700;}
+
+/* ── MONETIZATION PLAN PAGE ── */
+.plan-section{padding:20px 16px;}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px;}
+.pc-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.pc-num{width:28px;height:28px;background:var(--gold);color:#0A0812;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;}
+.pc-title{font-size:15px;font-weight:700;color:var(--cream);}
+.pc-rows{display:flex;flex-direction:column;gap:8px;}
+.pc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.pc-row:last-child{border-bottom:none;}
+.pc-label{font-size:12px;color:var(--muted);}
+.pc-value{font-size:12px;font-weight:700;color:var(--cream);}
+.pc-value.gold{color:var(--gold);}
+.pc-value.teal{color:var(--teal);}
+
+.revenue-target{background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(26,170,139,0.06));border:1px solid rgba(212,168,67,0.2);border-radius:var(--r);padding:20px;margin:0 16px 16px;text-align:center;}
+.rt-label{font-size:11px;color:var(--gold);letter-spacing:2px;font-weight:700;margin-bottom:6px;}
+.rt-amount{font-size:36px;font-weight:900;color:var(--gold);}
+.rt-period{font-size:12px;color:var(--muted);margin-top:4px;}
+.rt-bars{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+.rt-bar-row{display:flex;align-items:center;gap:10px;}
+.rt-bar-lbl{font-size:11px;color:var(--muted);min-width:100px;text-align:right;}
+.rt-bar-wrap{flex:1;height:6px;background:rgba(242,235,248,0.06);border-radius:3px;overflow:hidden;}
+.rt-bar-fill{height:100%;border-radius:3px;}
+.rt-bar-val{font-size:11px;font-weight:700;color:var(--gold);min-width:36px;text-align:left;}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(17,15,28,0.97);border:1px solid var(--gold);border-radius:30px;padding:10px 20px;font-size:13px;font-weight:600;color:var(--gold);z-index:999;opacity:0;transition:all 0.3s;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* AUDIO CONTEXT VISUAL */
+.audio-visual{height:40px;display:flex;align-items:center;justify-content:center;gap:2px;padding:0 16px;margin-top:8px;}
+.av-bar{width:3px;border-radius:2px;background:var(--gold);min-height:3px;transition:height 0.1s;}
+
+/* RESPONSIVE */
+@media(min-width:480px){
+  .feat-grid{grid-template-columns:repeat(2,1fr);}
+  .hero-banner{padding:80px 32px 52px;}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">🌟</div>
+  <div class="splash-name">تربية أونلاين</div>
+  <div class="splash-sub">AsrarSwift · مصطفى الأمير</div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+</div>
+
+<!-- PLAYER BAR -->
+<div class="player-bar" id="player-bar">
+  <div class="pb-info">
+    <div class="pb-name" id="pb-name">—</div>
+    <div class="pb-freq" id="pb-freq">—</div>
+    <div class="wave-anim" id="wave-anim">
+      <div class="wave-bar-a"></div><div class="wave-bar-a"></div>
+      <div class="wave-bar-a"></div><div class="wave-bar-a"></div>
+      <div class="wave-bar-a"></div><div class="wave-bar-a"></div>
+      <div class="wave-bar-a"></div>
+    </div>
+  </div>
+  <div class="pb-controls">
+    <button class="pb-btn" onclick="skipBack()">⏮</button>
+    <button class="pb-btn main" id="pb-main-btn" onclick="togglePlay()">⏸</button>
+    <button class="pb-btn" onclick="skipForward()">⏭</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="page-home">
+
+  <div class="hero-banner">
+    <div class="hero-logo">🔥</div>
+    <h1 class="hero-title">تربية <em>أونلاين</em></h1>
+    <p class="hero-sub">ربّي نفسك — ربّي من تحب — ربّي وعيك</p>
+    <button class="hero-cta" onclick="goPage('scales')">ابدأ مقياسك المجاني ←</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num">5+</div><div class="stat-lbl">حلقات</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl">ترددات</div></div>
+    <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">مقاييس</div></div>
+    <div class="stat-item"><div class="stat-num">∞</div><div class="stat-lbl">وعي</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">🎯 استكشف التطبيق</div>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card gold" onclick="goPage('podcast')">
+        <div class="feat-icon">🎙️</div>
+        <div class="feat-title">البودكاست</div>
+        <div class="feat-desc">حلقات تربية أونلاين كاملة</div>
+        <span class="feat-badge free">مجاني</span>
+      </div>
+      <div class="feat-card purple" onclick="goPage('music')">
+        <div class="feat-icon">🎵</div>
+        <div class="feat-title">ترددات الطاقة</div>
+        <div class="feat-desc">432Hz · 528Hz · 963Hz وأكثر</div>
+        <span class="feat-badge free">مجاني</span>
+      </div>
+      <div class="feat-card teal" onclick="goPage('scales')">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">المقاييس</div>
+        <div class="feat-desc">قيّم وعيك ووعي أبنائك</div>
+        <span class="feat-badge free">مجاني</span>
+      </div>
+      <div class="feat-card rose" onclick="goPage('profile')">
+        <div class="feat-icon">👑</div>
+        <div class="feat-title">النسخة المدفوعة</div>
+        <div class="feat-desc">محتوى حصري + جلسات مباشرة</div>
+        <span class="feat-badge pro">Pro</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">🎙️ أحدث الحلقات</div>
+      <div class="section-more" onclick="goPage('podcast')">الكل</div>
+    </div>
+    <div class="ep-card" onclick="showToast('🎙️ جاري تشغيل الحلقة الخامسة...')">
+      <div class="ep-thumb">🔥</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٥ · جديد</div>
+        <div class="ep-title">طاقة الرجل — الاستنزاف الغامض</div>
+        <div class="ep-meta">٦ دقائق · تربية الذات</div>
+      </div>
+      <div class="ep-play">▶</div>
+    </div>
+    <div class="ep-card" onclick="showToast('🎙️ جاري تشغيل الحلقة الرابعة...')">
+      <div class="ep-thumb">⚡</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٤</div>
+        <div class="ep-title">استراحة محارب — الراحة الاستراتيجية</div>
+        <div class="ep-meta">٥ دقائق · إدارة الذات</div>
+      </div>
+      <div class="ep-play">▶</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ PAGE: PODCAST ══ -->
+<div class="page" id="page-podcast">
+  <div class="page-header">
+    <h1>🎙️ <em>البودكاست</em></h1>
+    <p>تربية أونلاين مع مصطفى الأمير</p>
+  </div>
+  <div style="padding:0 16px;">
+    <div class="ep-card">
+      <div class="ep-thumb">🔥</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٥ · الأحدث</div>
+        <div class="ep-title">طاقة الرجل — الاستنزاف الغامض</div>
+        <div class="ep-meta">٦:٠٠ · اللسان · الازدواجية · الهوية</div>
+      </div>
+      <div class="ep-play" onclick="showToast('🎙️ تشغيل الحلقة ٥')">▶</div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-thumb">⚡</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٤</div>
+        <div class="ep-title">استراحة محارب</div>
+        <div class="ep-meta">٥:٠٠ · تربية الذات</div>
+      </div>
+      <div class="ep-play" onclick="showToast('🎙️ تشغيل الحلقة ٤')">▶</div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-thumb">🌙</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٣</div>
+        <div class="ep-title">دورة الطاقة عند المرأة</div>
+        <div class="ep-meta">٧:٠٠ · تربية الذات</div>
+      </div>
+      <div class="ep-play" onclick="showToast('🎙️ تشغيل الحلقة ٣')">▶</div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-thumb">🧠</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٢</div>
+        <div class="ep-title">تربية الذات قبل تربية الأبناء</div>
+        <div class="ep-meta">٦:٣٠ · الوعي الذاتي</div>
+      </div>
+      <div class="ep-play" onclick="showToast('🎙️ تشغيل الحلقة ٢')">▶</div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-thumb">🌱</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ١</div>
+        <div class="ep-title">ابنك بيطيعك من خوف ولا من حب؟</div>
+        <div class="ep-meta">٥:٤٥ · تربية الأبناء</div>
+      </div>
+      <div class="ep-play" onclick="showToast('🎙️ تشغيل الحلقة ١')">▶</div>
+    </div>
+    <div class="ep-card" style="opacity:0.5;">
+      <div class="ep-thumb">🔒</div>
+      <div class="ep-info">
+        <div class="ep-num">الحلقة ٦ · Pro</div>
+        <div class="ep-title">داخل عقل المراهق</div>
+        <div class="ep-meta">حصري للمشتركين</div>
+      </div>
+      <div class="ep-play" onclick="showToast('👑 هذه الحلقة للمشتركين Pro فقط')">🔒</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: MUSIC ══ -->
+<div class="page" id="page-music">
+  <div class="music-hero">
+    <h2>🎵 ترددات الطاقة والوعي</h2>
+    <p>موسيقى علمية لتحفيز الدماغ والروح</p>
+  </div>
+
+  <div class="freq-grid">
+
+    <div class="freq-card" id="freq-0">
+      <div class="freq-head">
+        <div class="freq-hz gold">
+          <div class="freq-hz-num" style="color:var(--gold);">432</div>
+          <div class="freq-hz-unit" style="color:var(--gold);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد الطبيعة والانسجام</div>
+          <div class="freq-desc">يُنسجم مع الإيقاع الطبيعي للكون — يُهدئ ويُوازن</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(0)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-1">
+      <div class="freq-head">
+        <div class="freq-hz teal">
+          <div class="freq-hz-num" style="color:var(--teal);">528</div>
+          <div class="freq-hz-unit" style="color:var(--teal);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد الإصلاح والتحوّل</div>
+          <div class="freq-desc">يُسمى "تردد المحبة" — يُساعد على الشفاء والتجديد</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(1)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-2">
+      <div class="freq-head">
+        <div class="freq-hz purple">
+          <div class="freq-hz-num" style="color:var(--purple);">396</div>
+          <div class="freq-hz-unit" style="color:var(--purple);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد التحرر من الخوف</div>
+          <div class="freq-desc">يُحرر من الطاقة السلبية والقلق المتراكم</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(2)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-3">
+      <div class="freq-head">
+        <div class="freq-hz rose">
+          <div class="freq-hz-num" style="color:var(--rose);">639</div>
+          <div class="freq-hz-unit" style="color:var(--rose);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد العلاقات والتواصل</div>
+          <div class="freq-desc">يُعزز التواصل والانسجام بين الناس</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(3)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-4">
+      <div class="freq-head">
+        <div class="freq-hz gold">
+          <div class="freq-hz-num" style="color:var(--gold);">741</div>
+          <div class="freq-hz-unit" style="color:var(--gold);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد الوعي والتعبير</div>
+          <div class="freq-desc">يُحفز الإبداع والتفكير الواضح</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(4)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-5">
+      <div class="freq-head">
+        <div class="freq-hz purple">
+          <div class="freq-hz-num" style="color:var(--purple);">852</div>
+          <div class="freq-hz-unit" style="color:var(--purple);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد الحدس الروحي</div>
+          <div class="freq-desc">يُوقظ الوعي الداخلي والرؤية العميقة</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(5)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-6">
+      <div class="freq-head">
+        <div class="freq-hz blue" style="background:linear-gradient(135deg,rgba(67,130,212,0.2),rgba(67,130,212,0.08));">
+          <div class="freq-hz-num" style="color:#4382D4;">963</div>
+          <div class="freq-hz-unit" style="color:#4382D4;">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">تردد الوعي الكوني</div>
+          <div class="freq-desc">أعلى الترددات — يُوصل بالوعي الشامل</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(6)">▶</button>
+      </div>
+    </div>
+
+    <div class="freq-card" id="freq-7">
+      <div class="freq-head">
+        <div class="freq-hz teal">
+          <div class="freq-hz-num" style="color:var(--teal);">40</div>
+          <div class="freq-hz-unit" style="color:var(--teal);">Hz</div>
+        </div>
+        <div class="freq-info">
+          <div class="freq-name">موجات جاما للتركيز</div>
+          <div class="freq-desc">يُعزز التركيز والذاكرة والتعلم العميق</div>
+        </div>
+        <button class="freq-btn play-btn" onclick="playFreq(7)">▶</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="padding:16px;margin-top:8px;">
+    <div style="background:rgba(212,168,67,0.06);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:11px;color:var(--muted);line-height:1.7;">
+      🔬 <strong style="color:rgba(242,235,248,0.6);">المرجعية العلمية:</strong> هذه الترددات مبنية على أبحاث علم الأعصاب الصوتي (Cymatics) وأبحاث موجات الدماغ (Brainwave Entrainment). الاستخدام اليومي 20–30 دقيقة للحصول على أفضل تأثير.
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: SCALES ══ -->
+<div class="page" id="page-scales">
+  <div class="page-header">
+    <h1>📊 <em>المقاييس العلمية</em></h1>
+    <p>اعرف وعيك بالأرقام — مجاناً</p>
+  </div>
+  <div class="scale-list">
+
+    <div class="scale-item" onclick="showToast('📊 جاري فتح مقياس الوعي الحياتي...')">
+      <div class="si-icon gold">🧠</div>
+      <div class="si-body">
+        <div class="si-title">مقياس الوعي الحياتي</div>
+        <div class="si-desc">للآباء والأمهات — طاقتك، وقتك، وحضورك مع أسرتك</div>
+        <div class="si-meta"><span class="si-badge free">مجاني</span><span class="si-qs">13 سؤال · 3 دقائق</span></div>
+      </div>
+    </div>
+
+    <div class="scale-item" onclick="showToast('🧠 جاري فتح مقياس المراهق...')">
+      <div class="si-icon purple">⚡</div>
+      <div class="si-body">
+        <div class="si-title">مقياس وعي المراهق</div>
+        <div class="si-desc">للمراهقين — هويتك، وعيك الرقمي، وبوصلتك الأخلاقية</div>
+        <div class="si-meta"><span class="si-badge free">مجاني</span><span class="si-qs">15 سؤال · 4 دقائق</span></div>
+      </div>
+    </div>
+
+    <div class="scale-item" onclick="showToast('🌙 جاري فتح مقياس الطاقة...')">
+      <div class="si-icon teal">🌙</div>
+      <div class="si-body">
+        <div class="si-title">مقياس طاقة المرأة — 28 يوم</div>
+        <div class="si-desc">خريطة الطاقة الأنثوية عبر دورة كاملة</div>
+        <div class="si-meta"><span class="si-badge free">مجاني</span><span class="si-qs">10 أسئلة · يومي</span></div>
+      </div>
+    </div>
+
+    <div class="scale-item" onclick="showToast('👑 هذا المقياس للمشتركين Pro فقط')">
+      <div class="si-icon rose" style="opacity:0.6;">🔒</div>
+      <div class="si-body">
+        <div class="si-title" style="opacity:0.6;">مقياس الرجولة الحقيقية</div>
+        <div class="si-desc" style="opacity:0.6;">قياس عمق الهوية الذكورية والبوصلة الأخلاقية</div>
+        <div class="si-meta"><span class="si-badge pro">Pro</span><span class="si-qs">20 سؤال · متعمق</span></div>
+      </div>
+    </div>
+
+    <div class="scale-item" onclick="showToast('👑 هذا المقياس للمشتركين Pro فقط')">
+      <div class="si-icon gold" style="opacity:0.6;">🔒</div>
+      <div class="si-body">
+        <div class="si-title" style="opacity:0.6;">مقياس التوافق الأسري</div>
+        <div class="si-desc" style="opacity:0.6;">قياس صحة العلاقة بين الزوجين في التربية</div>
+        <div class="si-meta"><span class="si-badge pro">Pro</span><span class="si-qs">18 سؤال · للزوجين</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ PAGE: PROFILE ══ -->
+<div class="page" id="page-profile">
+  <div class="profile-hero">
+    <div class="avatar">🌟</div>
+    <div class="profile-name">مصطفى الأمير</div>
+    <div class="profile-plan">🆓 النسخة المجانية</div>
+  </div>
+
+  <div class="upgrade-card">
+    <div class="uc-icon">👑</div>
+    <div class="uc-title">تربية أونلاين Pro</div>
+    <div class="uc-desc">افتح كل المحتوى الحصري وابدأ رحلتك الكاملة</div>
+    <div class="uc-features">
+      <div class="uc-feat">كل الحلقات بما فيها الحصرية</div>
+      <div class="uc-feat">ترددات Pro غير محدودة بدون إعلانات</div>
+      <div class="uc-feat">كل المقاييس المتقدمة</div>
+      <div class="uc-feat">جلسة مباشرة شهرية مع مصطفى</div>
+      <div class="uc-feat">مجتمع AsrarSwift الخاص</div>
+    </div>
+    <div class="uc-price">$9.99</div>
+    <div class="uc-period">شهرياً · يلغى في أي وقت</div>
+    <button class="uc-btn" onclick="showToast('👑 جاري الانتقال للاشتراك...')">اشترك الآن ←</button>
+  </div>
+
+  <div class="menu-list">
+    <div class="menu-item" onclick="goPage('plan')">
+      <div class="mi-icon">💰</div>
+      <div class="mi-body">
+        <div class="mi-title">خطة الربح والنمو</div>
+        <div class="mi-desc">كيف يحقق التطبيق عائداً مستداماً</div>
+      </div>
+      <div class="mi-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="showToast('📤 جاري فتح خيارات المشاركة...')">
+      <div class="mi-icon">📤</div>
+      <div class="mi-body">
+        <div class="mi-title">شارك التطبيق</div>
+        <div class="mi-desc">ادعُ أصدقاءك وأسرتك</div>
+      </div>
+      <div class="mi-arrow">←</div>
+    </div>
+    <div class="menu-item" onclick="showToast('💬 جاري فتح واتساب...')">
+      <div class="mi-icon">💬</div>
+      <div class="mi-body">
+        <div class="mi-title">تواصل معنا</div>
+        <div class="mi-desc">مصطفى الأمير · AsrarSwift</div>
+      </div>
+      <div class="mi-arrow">←</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: MONETIZATION PLAN ══ -->
+<div class="page" id="page-plan">
+  <div class="page-header">
+    <h1>💰 خطة <em>الربح</em></h1>
+    <p>استثمار لا يخسر — نموذج مبني على القيمة</p>
+  </div>
+
+  <div class="revenue-target">
+    <div class="rt-label">الهدف السنوي</div>
+    <div class="rt-amount">$24,000+</div>
+    <div class="rt-period">قابل للتضاعف مع نمو الجمهور</div>
+    <div class="rt-bars">
+      <div class="rt-bar-row">
+        <div class="rt-bar-lbl">اشتراكات Pro</div>
+        <div class="rt-bar-wrap"><div class="rt-bar-fill" style="width:50%;background:var(--gold);"></div></div>
+        <div class="rt-bar-val">$12K</div>
+      </div>
+      <div class="rt-bar-row">
+        <div class="rt-bar-lbl">الورش المباشرة</div>
+        <div class="rt-bar-wrap"><div class="rt-bar-fill" style="width:25%;background:var(--teal);"></div></div>
+        <div class="rt-bar-val">$6K</div>
+      </div>
+      <div class="rt-bar-row">
+        <div class="rt-bar-lbl">الاستشارات</div>
+        <div class="rt-bar-wrap"><div class="rt-bar-fill" style="width:17%;background:var(--purple);"></div></div>
+        <div class="rt-bar-val">$4K</div>
+      </div>
+      <div class="rt-bar-row">
+        <div class="rt-bar-lbl">الرعاة</div>
+        <div class="rt-bar-wrap"><div class="rt-bar-fill" style="width:8%;background:var(--rose);"></div></div>
+        <div class="rt-bar-val">$2K</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="plan-section">
+
+    <div class="plan-card">
+      <div class="pc-head"><div class="pc-num">١</div><div class="pc-title">نموذج Freemium — المحرك الرئيسي</div></div>
+      <div class="pc-rows">
+        <div class="pc-row"><div class="pc-label">المجاني يجذب</div><div class="pc-value teal">كل الأعمار والمراحل</div></div>
+        <div class="pc-row"><div class="pc-label">المدفوع يُكمل</div><div class="pc-value gold">$9.99/شهر</div></div>
+        <div class="pc-row"><div class="pc-label">نسبة تحويل متوقعة</div><div class="pc-value">5–10%</div></div>
+        <div class="pc-row"><div class="pc-label">100 مشترك = </div><div class="pc-value gold">$999/شهر</div></div>
+        <div class="pc-row"><div class="pc-label">200 مشترك = </div><div class="pc-value gold">$1,998/شهر</div></div>
+      </div>
+    </div>
+
+    <div class="plan-card">
+      <div class="pc-head"><div class="pc-num">٢</div><div class="pc-title">الترددات — الفكرة الأكثر إغراءً</div></div>
+      <div class="pc-rows">
+        <div class="pc-row"><div class="pc-label">المجاني</div><div class="pc-value teal">3 ترددات أساسية</div></div>
+        <div class="pc-row"><div class="pc-label">Pro</div><div class="pc-value gold">8+ ترددات + مخصصة</div></div>
+        <div class="pc-row"><div class="pc-label">السبب الجاذب</div><div class="pc-value">لا يوجد مثيل عربي</div></div>
+        <div class="pc-row"><div class="pc-label">الجمهور المستهدف</div><div class="pc-value">كل الأعمار</div></div>
+      </div>
+    </div>
+
+    <div class="plan-card">
+      <div class="pc-head"><div class="pc-num">٣</div><div class="pc-title">المقاييس — الأداة التي تُدمن</div></div>
+      <div class="pc-rows">
+        <div class="pc-row"><div class="pc-label">المجاني</div><div class="pc-value teal">3 مقاييس أساسية</div></div>
+        <div class="pc-row"><div class="pc-label">Pro</div><div class="pc-value gold">مقاييس متقدمة + تقارير</div></div>
+        <div class="pc-row"><div class="pc-label">الميزة</div><div class="pc-value">تُشارَك على السوشيال</div></div>
+        <div class="pc-row"><div class="pc-label">التأثير</div><div class="pc-value">كل مشاركة = إعلان مجاني</div></div>
+      </div>
+    </div>
+
+    <div class="plan-card">
+      <div class="pc-head"><div class="pc-num">٤</div><div class="pc-title">المنصة المجانية — GitHub Pages</div></div>
+      <div class="pc-rows">
+        <div class="pc-row"><div class="pc-label">تكلفة الاستضافة</div><div class="pc-value teal">$0 — مجانية للأبد</div></div>
+        <div class="pc-row"><div class="pc-label">متجر البيع</div><div class="pc-value">Big Cartel — مجاني</div></div>
+        <div class="pc-row"><div class="pc-label">الدفع</div><div class="pc-value">Gumroad / PayPal</div></div>
+        <div class="pc-row"><div class="pc-label">إجمالي التكلفة الأولية</div><div class="pc-value gold">$0</div></div>
+      </div>
+    </div>
+
+    <div class="plan-card">
+      <div class="pc-head"><div class="pc-num">٥</div><div class="pc-title">لماذا لا يخسر هذا الاستثمار؟</div></div>
+      <div class="pc-rows">
+        <div class="pc-row"><div class="pc-label">المحتوى مُنتَج بالفعل</div><div class="pc-value teal">5 حلقات موجودة</div></div>
+        <div class="pc-row"><div class="pc-label">الجمهور موجود</div><div class="pc-value">700+ متابع ويزيد</div></div>
+        <div class="pc-row"><div class="pc-label">المقاييس جاهزة</div><div class="pc-value teal">3 مقاييس مبنية</div></div>
+        <div class="pc-row"><div class="pc-label">التكلفة = صفر</div><div class="pc-value gold">الربح من اليوم الأول</div></div>
+        <div class="pc-row"><div class="pc-label">المنافسة العربية</div><div class="pc-value teal">شبه معدومة</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar">
+  <button class="nav-item active" onclick="goPage('home')" id="nav-home">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">الرئيسية</span>
+  </button>
+  <button class="nav-item" onclick="goPage('podcast')" id="nav-podcast">
+    <span class="nav-icon">🎙️</span>
+    <span class="nav-label">البودكاست</span>
+  </button>
+  <button class="nav-item" onclick="goPage('music')" id="nav-music">
+    <span class="nav-icon">🎵</span>
+    <span class="nav-label">الترددات</span>
+  </button>
+  <button class="nav-item" onclick="goPage('scales')" id="nav-scales">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">المقاييس</span>
+  </button>
+  <button class="nav-item" onclick="goPage('profile')" id="nav-profile">
+    <span class="nav-icon">👤</span>
+    <span class="nav-label">حسابي</span>
+  </button>
+</nav>
+
+<script>
+// ── SPLASH ──
+setTimeout(() => {
+  const splash = document.getElementById('splash');
+  splash.style.opacity = '0';
+  setTimeout(() => splash.style.display = 'none', 600);
+}, 2200);
+
+// ── NAVIGATION ──
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  const nav = document.getElementById('nav-' + id);
+  if (page) { page.classList.add('active'); page.scrollTop = 0; window.scrollTo(0,0); }
+  if (nav) nav.classList.add('active');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── AUDIO ENGINE ──
+let audioCtx = null;
+let currentOsc = null;
+let currentGain = null;
+let currentFreqIdx = -1;
+let isPlaying = false;
+
+const FREQS = [
+  { hz: 432, name: 'تردد الطبيعة والانسجام', color: '#D4A843' },
+  { hz: 528, name: 'تردد الإصلاح والتحوّل', color: '#1AAA8B' },
+  { hz: 396, name: 'تردد التحرر من الخوف', color: '#7B3FE4' },
+  { hz: 639, name: 'تردد العلاقات والتواصل', color: '#E44B6B' },
+  { hz: 741, name: 'تردد الوعي والتعبير', color: '#D4A843' },
+  { hz: 852, name: 'تردد الحدس الروحي', color: '#7B3FE4' },
+  { hz: 963, name: 'تردد الوعي الكوني', color: '#4382D4' },
+  { hz: 40,  name: 'موجات جاما للتركيز', color: '#1AAA8B' }
+];
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+function playFreq(idx) {
+  initAudio();
+
+  // Stop current
+  if (currentOsc) {
+    currentGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+    setTimeout(() => { if (currentOsc) { currentOsc.stop(); currentOsc = null; } }, 350);
+  }
+
+  // Reset all cards
+  document.querySelectorAll('.freq-card').forEach((c, i) => {
+    c.classList.remove('playing');
+    const btn = c.querySelector('.freq-btn');
+    btn.className = 'freq-btn play-btn';
+    btn.textContent = '▶';
+    btn.setAttribute('onclick', `playFreq(${i})`);
+  });
+
+  if (currentFreqIdx === idx && isPlaying) {
+    // Stop
+    currentFreqIdx = -1;
+    isPlaying = false;
+    document.getElementById('player-bar').classList.remove('active');
+    return;
+  }
+
+  // Play new
+  const freq = FREQS[idx];
+  currentOsc = audioCtx.createOscillator();
+  currentGain = audioCtx.createGain();
+
+  // Add subtle harmonics for richer sound
+  const osc2 = audioCtx.createOscillator();
+  const gain2 = audioCtx.createGain();
+  osc2.frequency.value = freq.hz * 2;
+  gain2.gain.value = 0.05;
+  osc2.connect(gain2);
+  gain2.connect(audioCtx.destination);
+
+  currentOsc.type = 'sine';
+  currentOsc.frequency.value = freq.hz;
+  currentGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+  currentGain.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 0.5);
+
+  currentOsc.connect(currentGain);
+  currentGain.connect(audioCtx.destination);
+  currentOsc.start();
+  osc2.start();
+
+  currentFreqIdx = idx;
+  isPlaying = true;
+
+  // Update card
+  const card = document.getElementById('freq-' + idx);
+  card.classList.add('playing');
+  const btn = card.querySelector('.freq-btn');
+  btn.className = 'freq-btn playing-btn';
+  btn.textContent = '⏸';
+
+  // Update player bar
+  const bar = document.getElementById('player-bar');
+  bar.classList.add('active');
+  document.getElementById('pb-name').textContent = freq.name;
+  document.getElementById('pb-freq').textContent = freq.hz + ' Hz';
+  document.getElementById('pb-main-btn').textContent = '⏸';
+
+  showToast('▶ ' + freq.hz + 'Hz — ' + freq.name);
+}
+
+function togglePlay() {
+  if (currentFreqIdx >= 0) playFreq(currentFreqIdx);
+}
+
+function skipBack() {
+  if (currentFreqIdx > 0) playFreq(currentFreqIdx - 1);
+  else playFreq(FREQS.length - 1);
+}
+
+function skipForward() {
+  if (currentFreqIdx < FREQS.length - 1) playFreq(currentFreqIdx + 1);
+  else playFreq(0);
+}
+
+// Resume AudioContext on user interaction (iOS)
+document.addEventListener('touchstart', () => {
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+}, { once: true });
+</script>
+</body>
+</html>
